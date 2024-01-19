@@ -72,7 +72,7 @@ void ordinary_test() {
 			}
 			bool skipped = false;
 			for (vector<int>::iterator it = dependences.begin(); it != dependences.end(); it++) {
-				if (subtaskType == "packed") {
+				if (subtaskType == "packed" || subtaskType == "almost") {
 					if (!subtasks[*it].passed) {
 						skipped = true;
 						break;
@@ -82,6 +82,7 @@ void ordinary_test() {
 				}
 			}
 			if (skipped) {
+				subtasks[t] = SubtaskInfo(false, 0);
 				add_subtask_info(t, 0, "Skipped", points);
 				continue;
 			}
@@ -89,6 +90,7 @@ void ordinary_test() {
 			int tfull = conf_int("subtask_score", t, 100 / nT);
 			int tscore = scale_score(minScore[t], tfull);
 			string info = "Accepted";
+			int unaccepted = 0;
 			for (int i = startI; i <= endI; i++) {
 				report_judge_status_f("Judging Test #%d of Subtask #%d", i, t);
 				PointInfo po = test_point("answer", i);
@@ -116,6 +118,25 @@ void ordinary_test() {
 						points.push_back(po);
 						info = po.info;
 					} else {
+						points.push_back(po);
+					}
+				} else if (subtaskType == "almost") {
+					if (po.scr != 100) {
+						unaccepted++;
+						if (unaccepted * 5 > endI - startI + 1) {
+							passed = false;
+							po.scr = unaccepted == i - startI + 1 ? 0 : -tfull;
+							tscore = 0;
+							points.push_back(po);
+							info = po.info;
+							break;
+						} else {
+							po.scr = 0;
+							points.push_back(po);
+						}
+					} else {
+						po.scr = unaccepted == i - startI ? tfull : 0;
+						tscore = tfull;
 						points.push_back(po);
 					}
 				}
