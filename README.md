@@ -4,7 +4,9 @@
 
 ## Usage
 
-你只需要用超级管理员权限，在数据包里加入 `judger.cpp` 和 `Makefile`，并在 `problem.conf` 中删除 `use_builtin_judger` 一行。
+你只需要用超级管理员权限，在数据包里加入本项目 `src` 文件夹中的文件，并在 `problem.conf` 中删除 `use_builtin_judger` 一行。
+
+如果题目需要使用 Special Judge，请在 `Makefile` 中第 4 行加入 SPJ 文件名，如 `chk`。
 
 ## Features
 
@@ -13,6 +15,10 @@
 在这个子任务类型模式下，你只需要通过了子任务内 80% 的数据点即视为通过了这个子任务。
 
 使用方法是在 `problem.conf` 里添加形如 `subtask_type_1 almost` 的一行。
+
+### 小数时间限制
+
+你可以将 `time_limit` 设为小数，实际评测时将会四舍五入到小数点后 3 位。
 
 ## Fixes
 
